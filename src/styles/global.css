@@ -1,0 +1,74 @@
+/* @import должен идти до @tailwind, иначе браузер его игнорирует. */
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+SC:wght@500;600;700&family=Cormorant+Garamond:ital,wght@1,500;1,600&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&family=Caveat:wght@500;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-night text-bone font-sans antialiased;
+  }
+  /* Плёночное зерно поверх всего сайта. */
+  body::before {
+    content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 9999; opacity: .07; mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  ::selection { background: rgba(179,38,30,.45); color: #e8dfd0; }
+  ::-webkit-scrollbar { width: 10px; }
+  ::-webkit-scrollbar-track { background: #0a0809; }
+  ::-webkit-scrollbar-thumb { background: #241c1c; border-radius: 10px; border: 2px solid #0a0809; }
+  :focus-visible { outline: 2px solid #e0483c; outline-offset: 3px; }
+}
+
+@layer components {
+  .av-container { @apply mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-10; }
+  .av-section { @apply relative z-[2] py-20 sm:py-28; }
+  /* подпись над заголовком — рукой, а не капсом: как пометка карандашом */
+  .av-kicker { @apply inline-block -rotate-2 font-hand text-2xl text-blood-light; }
+  .av-heading { @apply font-display text-4xl font-semibold leading-none tracking-wide sm:text-5xl lg:text-6xl; }
+  .av-card { @apply rounded-[3px] border border-bone/10 bg-night-900/70 transition-colors duration-300 hover:border-blood/40; }
+}
+
+/* Смена маршрута — только opacity (см. PageTransition). */
+@keyframes av-page-in { from { opacity: 0; } to { opacity: 1; } }
+.av-page-in { animation: av-page-in .45s ease both; }
+
+/* Заголовок «дышит» и иногда дёргается, как плохой сигнал. */
+@keyframes av-flicker {
+  0%, 92%, 100% { opacity: 1; text-shadow: 0 0 24px rgba(179,38,30,.45); }
+  93% { opacity: .55; }
+  94% { opacity: 1; transform: translateX(1px); }
+  96% { opacity: .7; transform: translateX(-1px); }
+  97% { opacity: 1; transform: none; }
+}
+.av-flicker { animation: av-flicker 6s infinite; }
+
+@keyframes av-fog { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+.av-fog {
+  position: absolute; inset: auto 0 0 0; height: 45%; width: 200%; pointer-events: none;
+  background: radial-gradient(ellipse at 25% 100%, rgba(232,223,208,.07), transparent 60%),
+              radial-gradient(ellipse at 75% 100%, rgba(232,223,208,.06), transparent 60%);
+  animation: av-fog 60s linear infinite;
+}
+
+@keyframes av-hero-zoom { from { transform: scale(1.12); } to { transform: scale(1); } }
+
+/* Маска медленно покачивается, как подвешенная на нитях. */
+@keyframes av-sway { 0%, 100% { transform: rotate(-2deg) translateY(0); } 50% { transform: rotate(2deg) translateY(-8px); } }
+
+/* нить с бусиной покачивается */
+@keyframes av-thread { 0%, 100% { transform: rotate(-4deg); } 50% { transform: rotate(5deg); } }
+
+@keyframes av-eq { from { transform: scaleY(.25); } to { transform: scaleY(1); } }
+
+@keyframes av-scroll-dot { 0%, 100% { transform: translateY(0); opacity: .9; } 50% { transform: translateY(10px); opacity: .3; } }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
