@@ -126,6 +126,7 @@ export const uz: Dict = {
             alvastiFeet: "Alvasti — orqaga qayrilgan oyoqlar",
             houseDiorama: "Buvining uyi — diorama",
             houseMap: "Buvining uyi — xarita",
+            sceneDoor: "Eshik ochildi",
             sceneUnderSandal: "Sandal ostida",
             sceneHiding: "Nafas olma",
             sceneGrandmotherRoom: "Buvining xonasi",

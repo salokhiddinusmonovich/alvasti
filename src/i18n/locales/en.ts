@@ -124,6 +124,7 @@ export const en = {
             alvastiFeet: "Alvasti — feet turned backwards",
             houseDiorama: "Grandmother's house — diorama",
             houseMap: "Grandmother's house — map",
+            sceneDoor: "The door opened",
             sceneUnderSandal: "Under the sandal",
             sceneHiding: "Don't breathe",
             sceneGrandmotherRoom: "Grandmother's room",

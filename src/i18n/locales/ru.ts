@@ -126,6 +126,7 @@ export const ru: Dict = {
             alvastiFeet: "Албасты — вывернутые стопы",
             houseDiorama: "Дом бабушки — диорама",
             houseMap: "Дом бабушки — карта",
+            sceneDoor: "Дверь открылась",
             sceneUnderSandal: "Под сандалом",
             sceneHiding: "Не дыши",
             sceneGrandmotherRoom: "Комната бабушки",

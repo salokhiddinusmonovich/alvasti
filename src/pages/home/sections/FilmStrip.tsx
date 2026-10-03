@@ -5,7 +5,7 @@ import { useLang } from "@/i18n/LanguageContext";
 import { gsap } from "@/lib/motion";
 import { Lightbox } from "@/components/ui/Lightbox";
 
-const FRAMES: ImageId[] = ["sceneUnderSandal", "sceneGrandmotherRoom", "boyPoses", "sceneHiding", "alvastiPoses", "houseDiorama", "prototype"];
+const FRAMES: ImageId[] = ["sceneDoor", "sceneUnderSandal", "sceneGrandmotherRoom", "boyPoses", "sceneHiding", "alvastiPoses", "houseDiorama", "prototype"];
 const HOLES = "repeating-linear-gradient(90deg, transparent 0 14px, #e8dfd0 14px 30px, transparent 30px 44px)";
 
 /**

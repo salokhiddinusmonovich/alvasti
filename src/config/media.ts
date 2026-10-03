@@ -12,6 +12,7 @@ export const IMAGES = {
     alvastiFeet: "/images/alvasti-feet.webp",
     houseDiorama: "/images/house-diorama.webp",
     houseMap: "/images/house-map.webp",
+    sceneDoor: "/images/scene-door.webp",
     sceneUnderSandal: "/images/scene-under-sandal.webp",
     sceneHiding: "/images/scene-hiding.webp",
     sceneGrandmotherRoom: "/images/scene-grandmother-room.webp",
@@ -21,11 +22,11 @@ export const IMAGES = {
 export type ImageId = keyof typeof IMAGES;
 
 /** Кадры из игры — для галереи на главной. */
-export const SCENES: ImageId[] = ["sceneUnderSandal", "sceneHiding", "sceneGrandmotherRoom", "houseDiorama"];
+export const SCENES: ImageId[] = ["sceneDoor", "sceneUnderSandal", "sceneHiding", "sceneGrandmotherRoom", "houseDiorama"];
 
 /** Полный порядок для страницы «Медиа». */
 export const ALL_MEDIA: ImageId[] = [
-    "sceneUnderSandal", "sceneHiding", "sceneGrandmotherRoom",
+    "sceneDoor", "sceneUnderSandal", "sceneHiding", "sceneGrandmotherRoom",
     "houseDiorama", "houseMap",
     "boyTurnaround", "boyPoses", "boyDetails",
     "alvastiTurnaround", "alvastiPoses", "alvastiDetails", "alvastiFeet",

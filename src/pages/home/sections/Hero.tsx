@@ -22,7 +22,7 @@ export function Hero() {
         const reduce = prefersReducedMotion();
         let auto = window.matchMedia("(pointer: coarse)").matches;
         let w = el.clientWidth, h = el.clientHeight;
-        let x = w * 0.66, y = h * 0.55, tx = x, ty = y, raf = 0, visible = true, idleSince = performance.now();
+        let x = w * 0.3, y = h * 0.8, tx = x, ty = y, raf = 0, visible = true, idleSince = performance.now();
         const t0 = performance.now();
 
         const set = (r: number) => {
@@ -41,7 +41,7 @@ export function Hero() {
             const s = (now - t0) / 1000;
             // нет движения 4 с — фонарь начинает сам медленно бродить
             const wander = auto || now - idleSince > 4000;
-            if (wander) { tx = w * (0.6 + 0.22 * Math.sin(s * 0.31)); ty = h * (0.52 + 0.2 * Math.sin(s * 0.47 + 1)); }
+            if (wander) { tx = w * (0.5 + 0.25 * Math.sin(s * 0.31)); ty = h * (0.62 + 0.18 * Math.sin(s * 0.47 + 1)); }
             x += (tx - x) * (wander ? 0.02 : 0.09);
             y += (ty - y) * (wander ? 0.02 : 0.09);
             const base = Math.min(w, h) * 0.34 + 90;
@@ -78,37 +78,36 @@ export function Hero() {
         gsap.to(".hero-copy", { yPercent: -30, opacity: 0, ease: "none", scrollTrigger: { trigger: root.current, start: "top top", end: "80% top", scrub: true } });
     }, { scope: root });
 
-    const lit = "radial-gradient(circle var(--lr, 320px) at var(--lx, 66%) var(--ly, 55%), #000 0%, rgba(0,0,0,.92) 30%, rgba(0,0,0,.35) 62%, transparent 100%)";
+    const lit = "radial-gradient(circle var(--lr, 320px) at var(--lx, 30%) var(--ly, 80%), #000 0%, rgba(0,0,0,.92) 30%, rgba(0,0,0,.35) 62%, transparent 100%)";
 
     return (
-        <section ref={root} className="relative z-[2] flex min-h-[100svh] items-end overflow-hidden pb-20 pt-28 sm:items-center">
+        <section ref={root} className="relative z-[2] flex min-h-[100svh] items-end overflow-hidden pb-20 pt-28 md:items-start md:pt-[13vh]">
             <div className="hero-scene absolute inset-0">
                 {/* тёмный слой — то, что видно без света */}
-                <img src={IMAGES.sceneUnderSandal} alt="" aria-hidden="true" className="absolute inset-0 h-full w-full object-cover object-[65%_center] brightness-[.16] saturate-[.5]" />
+                <img src={IMAGES.sceneDoor} alt="" aria-hidden="true" className="absolute inset-0 h-full w-full object-cover object-[72%_center] brightness-[.2] saturate-[.6] md:object-center" />
                 {/* освещённый слой — проступает только под фонарём */}
                 <img
-                    src={IMAGES.sceneUnderSandal}
+                    src={IMAGES.sceneDoor}
                     alt=""
                     aria-hidden="true"
-                    className="absolute inset-0 h-full w-full object-cover object-[65%_center] brightness-110 sepia-[.25]"
+                    className="absolute inset-0 h-full w-full object-cover object-[72%_center] md:object-center"
                     style={{ maskImage: lit, WebkitMaskImage: lit }}
                 />
                 {/* тёплый отсвет пламени */}
-                <div className="absolute inset-0 mix-blend-soft-light" style={{ background: "radial-gradient(circle calc(var(--lr, 320px) * .9) at var(--lx, 66%) var(--ly, 55%), rgba(255,160,70,.55), transparent 70%)" }} />
+                <div className="absolute inset-0 mix-blend-soft-light" style={{ background: "radial-gradient(circle calc(var(--lr, 320px) * .9) at var(--lx, 30%) var(--ly, 80%), rgba(255,160,70,.45), transparent 70%)" }} />
             </div>
-            <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-r from-night/90 via-night/40 to-transparent" />
-            <div aria-hidden="true" className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-night to-transparent" />
+            <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-br from-night/85 via-night/20 to-transparent" />
+            <div aria-hidden="true" className="absolute inset-x-0 bottom-0 h-[62%] bg-gradient-to-t from-night via-night/80 to-transparent md:h-40 md:via-transparent" />
 
             <div className="hero-copy av-container relative">
                 <p className="hero-made mb-6 inline-flex items-center gap-2 border border-bone/15 bg-night/50 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.25em] text-bone/70 backdrop-blur-sm">
                     <UzFlag /> {t.madeIn.badge}
                 </p>
-                <h1 className="-ml-[3%] w-[min(90vw,720px)]">
+                <h1 className="-ml-[3%] w-[min(90vw,600px)]">
                     <img src="/brand/wordmark.svg" alt={t.hero.title} className="hero-word w-full drop-shadow-[0_0_30px_rgba(179,38,30,0.35)]" />
                 </h1>
                 <p className="hero-tag -mt-4 font-hand text-4xl text-blood-light sm:text-5xl">{t.hero.tagline}</p>
-                <p className="hero-fade mt-6 max-w-lg leading-relaxed text-bone/75">{t.hero.lead}</p>
-                <div className="hero-fade mt-9 flex flex-wrap gap-4">
+                <div className="hero-fade mt-8 flex flex-wrap gap-4">
                     <ButtonAnchor href={SITE.links.steam}><SteamIcon width={16} height={16} /> {t.hero.ctaPrimary}</ButtonAnchor>
                     <ButtonAnchor href="#trailer" variant="ghost"><PlayIcon width={14} height={14} /> {t.hero.ctaSecondary}</ButtonAnchor>
                 </div>
