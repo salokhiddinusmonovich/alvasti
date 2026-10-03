@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { useGSAP } from "@gsap/react";
-import { IMAGES, type ImageId } from "@/config/media";
+import { IMAGES, type ImageId, srcSetOf } from "@/config/media";
 import { useLang } from "@/i18n/LanguageContext";
 import { gsap } from "@/lib/motion";
 import { Lightbox } from "@/components/ui/Lightbox";
@@ -45,7 +45,7 @@ export function FilmStrip() {
                     <div className="film-track flex w-max gap-0 bg-[#0d0a0b] px-4 py-7 md:px-10" style={{ backgroundImage: `${HOLES}, ${HOLES}`, backgroundSize: "44px 10px, 44px 10px", backgroundPosition: "0 8px, 0 calc(100% - 8px)", backgroundRepeat: "repeat-x" }}>
                         {items.map((it, i) => (
                             <button key={it.src} type="button" onClick={() => setActive(i)} className="film-frame group relative mx-2 h-[42vh] w-[75vw] shrink-0 overflow-hidden bg-black sm:w-[55vw] md:h-[56vh] md:w-[44vw]">
-                                <img src={it.src} alt={it.caption} loading="lazy" className="h-full w-[116%] max-w-none -translate-x-[8%] object-cover brightness-90 transition duration-500 group-hover:brightness-110" />
+                                <img src={it.src} srcSet={srcSetOf(it.src)} sizes="(min-width: 768px) 52vw, 87vw" alt={it.caption} loading="lazy" className="h-full w-[116%] max-w-none -translate-x-[8%] object-cover brightness-90 transition duration-500 group-hover:brightness-110" />
                                 <span className="absolute bottom-3 left-4 font-hand text-2xl text-bone drop-shadow-[0_2px_6px_rgba(0,0,0,.9)]">{it.caption}</span>
                                 <span className="absolute right-4 top-3 font-mono text-[10px] tracking-widest text-bone/50">{String(i + 1).padStart(2, "0")}A</span>
                             </button>

@@ -21,6 +21,18 @@ export const IMAGES = {
 
 export type ImageId = keyof typeof IMAGES;
 
+/** Картинки, у которых нет уменьшенной версии -1600 (маленькие исходники). */
+const NO_VARIANTS = new Set<string>([IMAGES.prototype]);
+
+/**
+ * srcset для арта: 1600px — телефоны и обычные экраны, 3200px — большие
+ * мониторы и ретина. Браузер сам выбирает подходящую версию.
+ */
+export function srcSetOf(src: string): string | undefined {
+    if (NO_VARIANTS.has(src) || !src.endsWith(".webp")) return undefined;
+    return `${src.replace(/\.webp$/, "-1600.webp")} 1600w, ${src} 3200w`;
+}
+
 /** Кадры из игры — для галереи на главной. */
 export const SCENES: ImageId[] = ["sceneDoor", "sceneUnderSandal", "sceneHiding", "sceneGrandmotherRoom", "houseDiorama"];
 

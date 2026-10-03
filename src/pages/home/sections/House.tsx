@@ -1,6 +1,6 @@
 import { useRef } from "react";
 import { useGSAP } from "@gsap/react";
-import { IMAGES } from "@/config/media";
+import { IMAGES, srcSetOf } from "@/config/media";
 import { useLang } from "@/i18n/LanguageContext";
 import { gsap } from "@/lib/motion";
 
@@ -50,7 +50,7 @@ export function House() {
             <div className="av-container grid items-center gap-12 lg:grid-cols-[1.5fr_1fr]">
                 <div className="[perspective:1400px]" onPointerMove={onMove} onPointerLeave={onLeave}>
                     <div ref={tilt} className="map-wrap relative [transform-style:preserve-3d]">
-                        <img src={IMAGES.houseMap} alt={t.media.captions.houseMap} loading="lazy" className="w-full rounded-sm shadow-[0_40px_80px_-30px_rgba(0,0,0,.95)]" />
+                        <img src={IMAGES.houseMap} srcSet={srcSetOf(IMAGES.houseMap)} sizes="(min-width: 1024px) 60vw, 100vw" alt={t.media.captions.houseMap} loading="lazy" className="w-full rounded-sm shadow-[0_40px_80px_-30px_rgba(0,0,0,.95)]" />
                         <svg className="absolute inset-0 h-full w-full" viewBox="0 0 1024 765" aria-hidden="true">
                             <defs>
                                 <filter id="routeGlow" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation="4" result="b" /><feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge></filter>

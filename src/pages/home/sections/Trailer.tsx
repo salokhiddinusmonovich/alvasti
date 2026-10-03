@@ -2,7 +2,7 @@ import { SITE } from "@/config/site";
 import { useLang } from "@/i18n/LanguageContext";
 import { FadeIn } from "@/components/effects/FadeIn";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { IMAGES } from "@/config/media";
+import { IMAGES, srcSetOf } from "@/config/media";
 import { PlayIcon } from "@/components/ui/Icons";
 
 export function Trailer() {
@@ -25,7 +25,7 @@ export function Trailer() {
                         </div>
                     ) : (
                         <div className="relative aspect-video overflow-hidden rounded-xl border border-bone/10">
-                            <img src={IMAGES.sceneGrandmotherRoom} alt="" loading="lazy" className="h-full w-full object-cover opacity-50" />
+                            <img src={IMAGES.sceneGrandmotherRoom} srcSet={srcSetOf(IMAGES.sceneGrandmotherRoom)} sizes="(min-width: 1152px) 1152px, 100vw" alt="" loading="lazy" className="h-full w-full object-cover opacity-50" />
                             <div className="absolute inset-0 flex flex-col items-center justify-center gap-4">
                                 <span className="flex h-16 w-16 items-center justify-center rounded-full border border-bone/30 bg-night/60 text-bone/70"><PlayIcon width={22} height={22} /></span>
                                 <span className="font-mono text-[11px] uppercase tracking-[0.25em] text-bone/70">{t.trailer.soon}</span>

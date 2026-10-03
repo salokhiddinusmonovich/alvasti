@@ -1,11 +1,21 @@
 import { useEffect, useRef, useState } from "react";
 import { useGSAP } from "@gsap/react";
 import { SITE } from "@/config/site";
-import { IMAGES } from "@/config/media";
+import { IMAGES, srcSetOf } from "@/config/media";
 import { useLang } from "@/i18n/LanguageContext";
 import { gsap, prefersReducedMotion } from "@/lib/motion";
 import { ButtonAnchor } from "@/components/ui/Button";
 import { PlayIcon, SteamIcon } from "@/components/ui/Icons";
+import { LightDust, type LanternLight, type StaticLight } from "@/components/motion/LightDust";
+
+/** Свет на самой картинке с дверью (доли кадра 1376×768): проём, луч, пятно на полу. */
+const DOOR_LIGHTS: StaticLight[] = [
+    { x: 0.76, y: 0.36, r: 0.3, strength: 0.55 },
+    { x: 0.6, y: 0.62, r: 0.2, strength: 0.32 },
+    { x: 0.66, y: 0.86, r: 0.22, strength: 0.38 },
+    { x: 0.295, y: 0.83, r: 0.17, strength: 0.5 }, // фонарь мальчика
+];
+const DOOR_IMAGE = { w: 1376, h: 768, posX: 0.5, posXMobile: 0.72 };
 
 /**
  * Первый экран: сцена почти в полной темноте, видно только то, что под
@@ -16,6 +26,7 @@ export function Hero() {
     const { t } = useLang();
     const root = useRef<HTMLElement>(null);
     const [moved, setMoved] = useState(false);
+    const light = useRef<LanternLight>({ x: 0, y: 0, r: 300 });
 
     useEffect(() => {
         const el = root.current!;
@@ -26,6 +37,7 @@ export function Hero() {
         const t0 = performance.now();
 
         const set = (r: number) => {
+            light.current = { x, y, r };
             el.style.setProperty("--lx", `${x}px`);
             el.style.setProperty("--ly", `${y}px`);
             el.style.setProperty("--lr", `${r}px`);
@@ -84,10 +96,10 @@ export function Hero() {
         <section ref={root} className="relative z-[2] flex min-h-[100svh] items-end overflow-hidden pb-20 pt-28 md:items-start md:pt-[13vh]">
             <div className="hero-scene absolute inset-0">
                 {/* тёмный слой — то, что видно без света */}
-                <img src={IMAGES.sceneDoor} alt="" aria-hidden="true" className="absolute inset-0 h-full w-full object-cover object-[72%_center] brightness-[.2] saturate-[.6] md:object-center" />
+                <img src={IMAGES.sceneDoor} srcSet={srcSetOf(IMAGES.sceneDoor)} sizes="100vw" alt="" aria-hidden="true" className="absolute inset-0 h-full w-full object-cover object-[72%_center] brightness-[.2] saturate-[.6] md:object-center" />
                 {/* освещённый слой — проступает только под фонарём */}
                 <img
-                    src={IMAGES.sceneDoor}
+                    src={IMAGES.sceneDoor} srcSet={srcSetOf(IMAGES.sceneDoor)} sizes="100vw"
                     alt=""
                     aria-hidden="true"
                     className="absolute inset-0 h-full w-full object-cover object-[72%_center] md:object-center"
@@ -95,6 +107,8 @@ export function Hero() {
                 />
                 {/* тёплый отсвет пламени */}
                 <div className="absolute inset-0 mix-blend-soft-light" style={{ background: "radial-gradient(circle calc(var(--lr, 320px) * .9) at var(--lx, 30%) var(--ly, 80%), rgba(255,160,70,.45), transparent 70%)" }} />
+                {/* пыль в воздухе — видна только в свете фонаря и двери */}
+                <LightDust lantern={light} lights={DOOR_LIGHTS} image={DOOR_IMAGE} />
             </div>
             <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-br from-night/85 via-night/20 to-transparent" />
             <div aria-hidden="true" className="absolute inset-x-0 bottom-0 h-[62%] bg-gradient-to-t from-night via-night/80 to-transparent md:h-40 md:via-transparent" />

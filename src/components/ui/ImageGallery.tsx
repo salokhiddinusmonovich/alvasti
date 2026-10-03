@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { IMAGES, type ImageId } from "@/config/media";
+import { IMAGES, type ImageId, srcSetOf } from "@/config/media";
 import { useLang } from "@/i18n/LanguageContext";
 import { StaggerReveal } from "@/components/effects/StaggerReveal";
 import { Lightbox } from "./Lightbox";
@@ -40,7 +40,7 @@ export function ImageTile({ src, caption, className = "", onOpen }: { src: strin
             onClick={onOpen}
             className={`group relative block w-full overflow-hidden rounded-xl border border-bone/10 bg-night-900 text-left ${className}`}
         >
-            <img src={src} alt={caption} loading="lazy" className="h-full w-full object-cover transition duration-700 group-hover:scale-[1.04]" />
+            <img src={src} srcSet={srcSetOf(src)} sizes="(min-width: 1024px) 34vw, (min-width: 640px) 50vw, 100vw" alt={caption} loading="lazy" className="h-full w-full object-cover transition duration-700 group-hover:scale-[1.04]" />
             <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-night/90 to-transparent px-4 pb-3 pt-10 font-mono text-[10px] uppercase tracking-[0.18em] text-bone/80 opacity-90 transition group-hover:opacity-100">
                 {caption}
             </span>

@@ -2,7 +2,7 @@ import { useLang } from "@/i18n/LanguageContext";
 import { StaggerReveal } from "@/components/effects/StaggerReveal";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { FadeIn } from "@/components/effects/FadeIn";
-import { IMAGES } from "@/config/media";
+import { IMAGES, srcSetOf } from "@/config/media";
 
 export function LorePage() {
     const { t } = useLang();
@@ -13,7 +13,7 @@ export function LorePage() {
             <section className="av-section pt-0">
                 <FadeIn className="av-container mb-16">
                     <figure className="overflow-hidden rounded-2xl border border-bone/10 bg-[#e6e4df]">
-                        <img src={IMAGES.alvastiFeet} alt={l.feetCaption} className="w-full" />
+                        <img src={IMAGES.alvastiFeet} srcSet={srcSetOf(IMAGES.alvastiFeet)} sizes="(min-width: 1152px) 1152px, 100vw" alt={l.feetCaption} className="w-full" />
                     </figure>
                     <figcaption className="mt-3 font-mono text-[11px] uppercase tracking-[0.18em] text-bone/50">{l.feetCaption}</figcaption>
                 </FadeIn>

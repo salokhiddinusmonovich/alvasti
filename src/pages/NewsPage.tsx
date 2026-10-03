@@ -1,4 +1,4 @@
-import { IMAGES, type ImageId } from "@/config/media";
+import { IMAGES, type ImageId, srcSetOf } from "@/config/media";
 import { useLang } from "@/i18n/LanguageContext";
 import { StaggerReveal } from "@/components/effects/StaggerReveal";
 import { PageHeader } from "@/components/ui/PageHeader";
@@ -16,7 +16,7 @@ export function NewsPage() {
                     <StaggerReveal>
                         {t.news.items.map((n) => (
                             <article key={n.date} className="av-card grid overflow-hidden md:grid-cols-[320px_1fr]">
-                                <img src={IMAGES[n.image as ImageId]} alt="" loading="lazy" className="aspect-video h-full w-full object-cover" />
+                                <img src={IMAGES[n.image as ImageId]} srcSet={srcSetOf(IMAGES[n.image as ImageId])} sizes="(min-width: 768px) 320px, 100vw" alt="" loading="lazy" className="aspect-video h-full w-full object-cover" />
                                 <div className="p-7">
                                     <time dateTime={n.date} className="font-mono text-[11px] uppercase tracking-[0.18em] text-blood-light">{fmt.format(new Date(n.date))}</time>
                                     <h2 className="mt-2 font-display text-3xl font-semibold">{n.title}</h2>

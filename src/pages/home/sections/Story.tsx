@@ -1,8 +1,9 @@
 import { useRef } from "react";
 import { useGSAP } from "@gsap/react";
-import { IMAGES, type ImageId } from "@/config/media";
+import { IMAGES, type ImageId, srcSetOf } from "@/config/media";
 import { useLang } from "@/i18n/LanguageContext";
 import { gsap } from "@/lib/motion";
+import { LightDust } from "@/components/motion/LightDust";
 
 const SCENES: ImageId[] = ["sceneGrandmotherRoom", "sceneHiding", "sceneUnderSandal"];
 
@@ -42,9 +43,10 @@ export function Story() {
         <section ref={root} className="relative z-[2]" style={{ height: `${SCENES.length * 110 + 60}vh` }}>
             <div className="sticky top-0 h-[100svh] overflow-hidden">
                 {SCENES.map((id, i) => (
-                    <img key={id} src={IMAGES[id]} alt="" aria-hidden="true" className={`story-img-${i} absolute inset-0 h-full w-full object-cover brightness-[.55]`} style={{ opacity: i === 0 ? 1 : 0 }} />
+                    <img key={id} src={IMAGES[id]} srcSet={srcSetOf(IMAGES[id])} sizes="100vw" alt="" aria-hidden="true" className={`story-img-${i} absolute inset-0 h-full w-full object-cover brightness-[.55]`} style={{ opacity: i === 0 ? 1 : 0 }} />
                 ))}
                 <div aria-hidden="true" className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_20%,rgba(10,8,9,.9)_85%)]" />
+                <LightDust ambient={0.28} density={0.55} />
                 <div aria-hidden="true" className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-night to-transparent" />
                 <div aria-hidden="true" className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-night to-transparent" />
 

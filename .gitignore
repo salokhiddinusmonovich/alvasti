@@ -9,3 +9,6 @@ dist-ssr
 .idea
 .vscode/*
 !.vscode/extensions.json
+
+# 4K-мастера артов (большие, хранятся локально)
+brand/art-4k/
