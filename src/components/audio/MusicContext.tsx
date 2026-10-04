@@ -1,6 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from "react";
 
-const SRC = "/audio/alla.mp3";
+const SRC = "/audio/menu-dutar.mp3";
 const VOLUME = 0.45;
 const STORAGE_KEY = "alvasti_muted";
 
@@ -25,7 +25,7 @@ function fade(audio: HTMLAudioElement, to: number, ms: number, done?: () => void
 }
 
 /**
- * Фоновая музыка сайта («Alla»). Пытается стартовать сразу при загрузке;
+ * Фоновая музыка сайта (Alvasti Menu — dutar). Пытается стартовать сразу при загрузке;
  * браузеры обычно блокируют звук до первого действия пользователя — тогда
  * музыка запускается на первый клик / тап / клавишу. Выбор «без звука»
  * запоминается, на скрытой вкладке музыка ставится на паузу.

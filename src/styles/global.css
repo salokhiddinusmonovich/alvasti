@@ -72,3 +72,9 @@
     scroll-behavior: auto !important;
   }
 }
+
+/* зерно плёнки в заставке */
+@keyframes li-grain {
+  0% { background-position: 0 0; } 20% { background-position: -40px 25px; } 40% { background-position: 30px -35px; }
+  60% { background-position: -20px -15px; } 80% { background-position: 45px 40px; } 100% { background-position: 0 0; }
+}

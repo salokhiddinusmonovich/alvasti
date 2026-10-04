@@ -3,6 +3,8 @@
 import fs from "fs";
 
 const OUT = process.argv[2] || "./mask";
+/** true во время сборки анимируемой версии: добавляет «открытые глаза» и иглу. */
+let ANIM = false;
 fs.mkdirSync(OUT, { recursive: true });
 
 let seed = 11;
@@ -79,7 +81,7 @@ function faceMesh() {
     }
     return tris.map((t) => {
         const c = triColor(t);
-        return `<path d="M${t.map(([x, y]) => `${f(x)} ${f(y)}`).join("L")}Z" fill="${c}" stroke="${c}" stroke-width=".9" stroke-linejoin="round"/>`;
+        return `<path class="m-tri" d="M${t.map(([x, y]) => `${f(x)} ${f(y)}`).join("L")}Z" fill="${c}" stroke="${c}" stroke-width=".9" stroke-linejoin="round"/>`;
     }).join("");
 }
 
@@ -103,7 +105,9 @@ function features() {
     for (const d of [-1, 1]) {
         const ex = cx + d * 66, ey = cy - 10;
         // глаз: тёмная щель + тяжёлое верхнее веко + складка
-        s += `<path d="M${ex - 34 * d} ${ey + 2} Q${ex} ${ey - 11} ${ex + 36 * d} ${ey - 1} Q${ex + 4 * d} ${ey + 8} ${ex - 34 * d} ${ey + 2}Z" fill="#120b09"/>`;
+        s += `<path class="m-eye" d="M${ex - 34 * d} ${ey + 2} Q${ex} ${ey - 11} ${ex + 36 * d} ${ey - 1} Q${ex + 4 * d} ${ey + 8} ${ex - 34 * d} ${ey + 2}Z" fill="#120b09"/>`;
+        // открытый глаз (только в анимации): белок + чёрная радужка с красным ободком
+        if (ANIM) s += `<g class="m-open" style="opacity:0"><ellipse cx="${ex + d}" cy="${ey - 2}" rx="31" ry="13" fill="#e9e1cf"/><g class="m-iris"><circle cx="${ex + d}" cy="${ey - 2}" r="10.5" fill="#7a140f"/><circle cx="${ex + d}" cy="${ey - 2}" r="8" fill="#060303"/><circle cx="${ex + d - 3}" cy="${ey - 5}" r="2.2" fill="#fff" opacity=".85"/></g></g>`;
         s += taper(ex - 40 * d, ey + 2, ex - 2 * d, ey - 17, ex + 42 * d, ey - 2, 7, ink);
         s += taper(ex - 30 * d, ey - 12, ex + 2 * d, ey - 30, ex + 36 * d, ey - 15, 3.2, soft, 0.55);
         s += taper(ex - 26 * d, ey + 14, ex + 2 * d, ey + 24, ex + 30 * d, ey + 12, 3.2, soft, 0.5);
@@ -130,22 +134,22 @@ function features() {
 
 /** Стежок: проколы + нить с объёмом. */
 function stitch(x1, y1, x2, y2) {
-    let s = "";
+    let s = `<g class="m-stitch">`;
     for (const [x, y] of [[x1, y1], [x2, y2]]) s += `<circle cx="${f(x)}" cy="${f(y)}" r="4.2" fill="#1a0e0b" opacity=".75"/>`;
     s += `<line x1="${f(x1 + 1.5)}" y1="${f(y1 + 3.5)}" x2="${f(x2 + 1.5)}" y2="${f(y2 + 3.5)}" stroke="#000" stroke-opacity=".5" stroke-width="7.5" stroke-linecap="round"/>`;
     s += `<line x1="${f(x1)}" y1="${f(y1)}" x2="${f(x2)}" y2="${f(y2)}" stroke="${RED}" stroke-width="6.5" stroke-linecap="round"/>`;
     s += `<line x1="${f(x1 + (x2 - x1) * 0.15)}" y1="${f(y1 + (y2 - y1) * 0.15 - 1.4)}" x2="${f(x1 + (x2 - x1) * 0.7)}" y2="${f(y1 + (y2 - y1) * 0.7 - 1.4)}" stroke="${RED_LIGHT}" stroke-width="2" stroke-linecap="round" opacity=".7"/>`;
-    return s;
+    return s + `</g>`;
 }
 
 function bead(x, y, r) {
-    return `<circle cx="${f(x + 2)}" cy="${f(y + 4)}" r="${r}" fill="#000" opacity=".45"/><circle cx="${f(x)}" cy="${f(y)}" r="${r}" fill="url(#bead)"/>`;
+    return `<g class="m-bead"><circle cx="${f(x + 2)}" cy="${f(y + 4)}" r="${r}" fill="#000" opacity=".45"/><circle cx="${f(x)}" cy="${f(y)}" r="${r}" fill="url(#bead)"/></g>`;
 }
 function thread(pts, beads, w = 4) {
     const d = `M${pts[0].join(" ")} C${pts.slice(1).map((p) => p.join(" ")).join(" ")}`;
-    let s = `<path d="${d}" fill="none" stroke="#000" stroke-opacity=".45" stroke-width="${w + 1.5}" stroke-linecap="round" transform="translate(2 4)"/>`;
-    s += `<path d="${d}" fill="none" stroke="${RED}" stroke-width="${w}" stroke-linecap="round"/>`;
-    return s + beads.map(([x, y, r]) => bead(x, y, r)).join("");
+    let s = `<g class="m-thread"><path class="m-tl" d="${d}" fill="none" stroke="#000" stroke-opacity=".45" stroke-width="${w + 1.5}" stroke-linecap="round" transform="translate(2 4)"/>`;
+    s += `<path class="m-tl" d="${d}" fill="none" stroke="${RED}" stroke-width="${w}" stroke-linecap="round"/>`;
+    return s + beads.map(([x, y, r]) => bead(x, y, r)).join("") + `</g>`;
 }
 
 function stitchesAndThreads() {
@@ -177,7 +181,7 @@ function hair() {
         const w = 14 + rnd() * 12, a = jit(1.4) + (x - cx) * 0.012, top = cy - ry - 150;
         const tone = rnd() ** 1.7;
         const c = rgb([18 + tone * 26, 14 + tone * 20, 15 + tone * 21]);
-        strips += `<g transform="rotate(${f(a)} ${f(x)} ${top})"><path d="M${f(x)} ${top} L${f(x + w)} ${top} L${f(x + w + jit(5))} ${f(bottom)} L${f(x + w / 2)} ${f(bottom + 12 + rnd() * 18)} L${f(x + jit(5))} ${f(bottom)} Z" fill="${c}" stroke="#090607" stroke-width="1.6"/>`;
+        strips += `<g class="m-strip" transform="rotate(${f(a)} ${f(x)} ${top})"><path d="M${f(x)} ${top} L${f(x + w)} ${top} L${f(x + w + jit(5))} ${f(bottom)} L${f(x + w / 2)} ${f(bottom + 12 + rnd() * 18)} L${f(x + jit(5))} ${f(bottom)} Z" fill="${c}" stroke="#090607" stroke-width="1.6"/>`;
         if (rnd() < 0.45) strips += `<line x1="${f(x + 2.5)}" y1="${top}" x2="${f(x + 2.5)}" y2="${f(bottom - 10)}" stroke="#4a3f41" stroke-width="1.1" opacity="${f(0.25 + rnd() * 0.4)}"/>`;
         strips += `</g>`;
     }
@@ -205,11 +209,13 @@ function build(variant) {
     seed = 11;
     const face = faceMesh(), feat = features(), st = stitchesAndThreads(), hr = hair();
     const outline = faceOutline();
+    // в анимации без SVG-тени на сотнях движущихся треугольников (дорого), тень даёт CSS
+    const needle = ANIM ? `<circle class="m-needle" r="7" fill="#ff8a7a" style="opacity:0"/>` : "";
     const maskGroup = `
-      <g filter="url(#paperShadow)">${face}</g>
+      <g class="m-face"${ANIM ? "" : ' filter="url(#paperShadow)"'}>${face}</g>
       <clipPath id="faceClip"><path d="${outline}"/></clipPath>
-      <g clip-path="url(#faceClip)"><rect x="300" y="200" width="430" height="520" filter="url(#fiber)" opacity=".5"/><path d="${outline}" fill="url(#faceVignette)"/></g>
-      <g>${feat}</g>${st}`;
+      <g class="m-fiber" clip-path="url(#faceClip)"><rect x="300" y="200" width="430" height="520" filter="url(#fiber)" opacity=".5"/><path d="${outline}" fill="url(#faceVignette)"/></g>
+      <g class="m-feat">${feat}</g>${st}${needle}`;
     if (variant === "icon") {
         // крупно лицо со стежками — для favicon и мелких размеров
         return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="262 220 500 500" width="1024" height="1024"><defs>${DEFS}</defs>
@@ -226,4 +232,8 @@ function build(variant) {
 fs.writeFileSync(`${OUT}/alvasti-mask.svg`, build("avatar"));
 fs.writeFileSync(`${OUT}/alvasti-mask-transparent.svg`, build("transparent"));
 fs.writeFileSync(`${OUT}/alvasti-mask-icon.svg`, build("icon"));
+// версия для анимации на сайте (src/assets) — прозрачный фон, с метками классов
+ANIM = true;
+fs.writeFileSync(`${OUT}/alvasti-mask-anim.svg`, build("transparent"));
+ANIM = false;
 console.log("ok");

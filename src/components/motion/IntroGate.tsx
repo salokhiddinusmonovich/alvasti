@@ -1,14 +1,19 @@
-import { useEffect, useRef, useState } from "react";
+import { Suspense, lazy, useEffect, useRef, useState } from "react";
 import { useGSAP } from "@gsap/react";
 import { gsap, lockScroll } from "@/lib/motion";
 import { LANGS, useLang } from "@/i18n/LanguageContext";
 import { useMusic } from "@/components/audio/MusicContext";
 
+// кинематографичная заставка грузится отдельным чанком
+const LanternIntro = lazy(() => import("./LanternIntro").then((m) => ({ default: m.LanternIntro })));
+
 const KEY = "alvasti_entered";
 const seen = () => { try { return sessionStorage.getItem(KEY) === "1"; } catch { return false; } };
 
 /**
- * Заставка на входе: маска в темноте, «наденьте наушники», кнопка «Войти».
+ * Заставка на входе: кинематографичная сцена «фонарь» (LanternIntro) на весь
+ * экран, управление — в чёрных кинополосах: язык сверху, «наденьте наушники»
+ * и «Войти» снизу. Войти можно в любой момент, не дожидаясь конца сцены.
  * Клик — это жест пользователя, поэтому музыка гарантированно стартует.
  * Показывается один раз за сессию браузера.
  */
@@ -26,10 +31,8 @@ export function IntroGate() {
 
     useGSAP(() => {
         if (!open) return;
-        gsap.timeline()
-            .from(".gate-mask", { opacity: 0, scale: 0.85, filter: "blur(18px)", duration: 2.2, ease: "power2.out" })
-            .from(".gate-line", { opacity: 0, y: 14, stagger: 0.18, duration: 0.9, ease: "power2.out" }, "-=1.1")
-            .from(".gate-btn", { opacity: 0, scale: 0.9, duration: 0.8, ease: "back.out(2)" }, "-=0.4");
+        // управление проявляется в полосах, когда они уже выехали
+        gsap.from(".gate-ui", { opacity: 0, duration: 1.2, stagger: 0.2, delay: 1.6, ease: "power2.out" });
     }, { scope: root, dependencies: [open] });
 
     const enter = () => {
@@ -48,27 +51,35 @@ export function IntroGate() {
             <div className="gate-left absolute inset-y-0 left-0 w-1/2 bg-[#070506]" />
             <div className="gate-right absolute inset-y-0 right-0 w-1/2 bg-[#070506]" />
             {/* шов между половинками — красные стежки */}
-            <div className="gate-content absolute inset-0 flex flex-col items-center justify-center px-4 text-center">
-                <div className="absolute right-4 top-4 flex gap-1 font-mono text-[10px] tracking-widest">
+            <div className="gate-content absolute inset-0">
+                <Suspense fallback={<div className="h-full w-full bg-[#050304]" />}>
+                    <LanternIntro tagline={t.hero.tagline} />
+                </Suspense>
+
+                {/* верхняя полоса: язык */}
+                <div className="gate-ui absolute inset-x-0 top-0 flex h-[9vh] items-center justify-end gap-1 px-4 font-mono text-[10px] tracking-widest sm:px-8">
                     {LANGS.map((l) => (
                         <button key={l.code} type="button" onClick={() => setLang(l.code)} className={`px-2 py-1 ${lang === l.code ? "text-blood-light" : "text-bone/35 hover:text-bone"}`}>
                             {l.label}
                         </button>
                     ))}
                 </div>
-                <img src="/brand/mask.webp" alt="" className="gate-mask w-56 [animation:av-sway_7s_ease-in-out_infinite] [mask-image:linear-gradient(to_bottom,black_60%,transparent_92%)] sm:w-72" />
-                <p className="gate-line mt-2 font-hand text-3xl text-bone/85">
-                    <HeadphonesIcon /> {t.intro.headphones}
-                </p>
-                <p className="gate-line mt-1 font-mono text-[10px] uppercase tracking-[0.3em] text-bone/35">{t.intro.note}</p>
-                <button
-                    type="button"
-                    onClick={enter}
-                    className="gate-btn group relative mt-10 px-12 py-4 font-display text-2xl tracking-[0.3em] text-bone transition-colors hover:text-blood-light"
-                >
-                    <span className="absolute inset-0 border border-dashed border-blood/70 transition-transform duration-500 group-hover:scale-105" />
-                    {t.intro.enter}
-                </button>
+
+                {/* нижняя полоса: наушники и вход */}
+                <div className="absolute inset-x-0 bottom-0 flex h-[9vh] items-center justify-between gap-4 px-4 sm:px-8">
+                    <p className="gate-ui flex items-center font-hand text-xl text-bone/70 sm:text-2xl">
+                        <HeadphonesIcon /> <span className="hidden sm:inline">{t.intro.headphones}</span>
+                        <span className="ml-3 hidden font-mono text-[9px] uppercase tracking-[0.3em] text-bone/30 md:inline">{t.intro.note}</span>
+                    </p>
+                    <button
+                        type="button"
+                        onClick={enter}
+                        className="gate-ui gate-btn group flex items-center gap-3 font-display text-xl tracking-[0.35em] text-bone transition-colors hover:text-blood-light sm:text-2xl"
+                    >
+                        {t.intro.enter}
+                        <span className="inline-block h-px w-10 bg-blood-light transition-all duration-500 group-hover:w-16" />
+                    </button>
+                </div>
             </div>
         </div>
     );
